@@ -79,6 +79,21 @@ class FromJsonMethodVisitor(
 
     override fun onMethodExit(opcode: Int) {
 
+        methodVisitor.visitFieldInsn(
+            GETSTATIC,
+            "com/example/gsonparserplugin/GsonRecorder",
+            "INSTANCE",
+            "Lcom/example/gsonparserplugin/GsonRecorder;"
+        )
+        methodVisitor.visitLdcInsn("")
+        methodVisitor.visitMethodInsn(
+            INVOKEVIRTUAL,
+            "com/example/gsonparserplugin/GsonRecorder",
+            "methodExit",
+            "(Ljava/lang/String;)V",
+            false
+        );
+
         super.onMethodExit(opcode)
     }
 }
