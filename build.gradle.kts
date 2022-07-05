@@ -5,7 +5,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "com.donggua"
+group = "io.github.lxd312569496"
 version = "1.0"
 
 repositories {

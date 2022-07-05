@@ -17,7 +17,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "com.donggua:GsonPlugin:[latest]"
+    classpath "io.github.lxd312569496:GsonPlugin:[latest]"
   }
 }
 
