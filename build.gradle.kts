@@ -26,17 +26,16 @@ dependencies {
 pluginBundle{
     website = "https://github.com/LXD312569496/GsonPlugin"
     vcsUrl = "https://github.com/LXD312569496/GsonPlugin"
-    tags = listOf("tags", "for", "your", "plugins")
+    tags = listOf("gson")
 }
 
 gradlePlugin{
     plugins{
         create("com.donggua.GsonPlugin"){
-            id = "com.donggua.GsonPlugin"
+            id = "io.github.LXD312569496.GsonPlugin"
             displayName = "GsonPlugin"
-            description = "GsonPlugin"
+            description = "A Plugin that can hook fromJson method,show cost time"
             implementationClass = "com.example.gson.GsonParserPlugin"
-
         }
     }
 }
@@ -45,13 +44,6 @@ gradlePlugin{
 //////发布到maven仓库
 publishing{
     publications {
-//        create<MavenPublication>("maven"){
-//            group = "com.donggua.gsonplugin"
-//            artifactId="library"
-//            version = "1.0"
-//
-//            from(components["java"])
-//        }
     }
     repositories{
         //发布到本地
