@@ -27,12 +27,12 @@ class GsonParserPlugin:Plugin<Project> {
 
         androidComponents.onVariants { variant ->
             //注册Transform，控制是否需要扫描依赖库代码
-            variant.instrumentation.transformClassesWith(
+            variant.transformClassesWith(
                 GsonParserTransform::class.java,
                 InstrumentationScope.ALL
             ){}
 
-            variant.instrumentation.setAsmFramesComputationMode(
+            variant.setAsmFramesComputationMode(
                 FramesComputationMode.COMPUTE_FRAMES_FOR_INSTRUMENTED_METHODS
             )
             val gsonPluginExtension = variant.getExtension(GsonPluginExtension::class.java)

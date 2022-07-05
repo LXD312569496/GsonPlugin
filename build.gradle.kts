@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "io.github.lxd312569496"
-version = "1.0"
+version = "1.2"
 
 repositories {
     google()
@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     implementation(gradleApi())
-    implementation("com.android.tools.build:gradle-api:7.2.0")
+    implementation("com.android.tools.build:gradle-api:7.0.3")
     implementation("commons-io:commons-io:2.6")
     implementation("commons-codec:commons-codec:1.15")
     implementation("org.ow2.asm:asm-commons:9.2")
