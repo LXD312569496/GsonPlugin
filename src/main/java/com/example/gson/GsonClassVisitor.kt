@@ -22,23 +22,29 @@ class GsonClassVisitor(cv: ClassVisitor?) : ClassVisitor(Opcodes.ASM5, cv) {
     ): MethodVisitor {
         println("com.example.gson.GsonClassVisitor visitMethod name:$name")
         val methodVisitor = super.visitMethod(access, name, desc, signature, exceptions)
-        if (!name.equals("fromJson")) {
-            return methodVisitor
-        }
         //参数个数
         val args = Type.getArgumentTypes(desc)
-        if (args.size != 2
-            || args.get(0) != Type.getType(String::class.java)
-            || args.get(1) != Type.getType(java.lang.reflect.Type::class.java)
+
+        if (name.equals("fromJson") && args.size == 2
+            && args.get(0) == Type.getType(String::class.java)
+            && args.get(1) == Type.getType(java.lang.reflect.Type::class.java)
         ) {
-            return methodVisitor
+            //访问fromJson方法
+            val newMethodVisitor = FromJsonMethodVisitor(
+                methodVisitor, access, name, desc
+            )
+            return newMethodVisitor
         }
 
-        //访问fromJson方法
-        val newMethodVisitor = FromJsonMethodVisitor(
-            methodVisitor, access, name, desc
-        )
-        return newMethodVisitor
+        if (name.equals("toJson") && args.size == 2
+            && args.get(1) == Type.getType(java.lang.reflect.Type::class.java)){
+            val newMethodVisitor =ToJsonMethodVisitor(
+                methodVisitor,access,name,desc
+            )
+            return newMethodVisitor
+        }
+
+        return methodVisitor
     }
 }
 
@@ -70,7 +76,7 @@ class FromJsonMethodVisitor(
             INVOKEVIRTUAL,
             "com/example/gsonparserplugin/GsonRecorder",
             "methodEnter",
-            "(Ljava/lang/String;Ljava/lang/reflect/Type;)V",
+            "(Ljava/lang/Object;Ljava/lang/Object;)V",
             false
         );
 
@@ -96,4 +102,53 @@ class FromJsonMethodVisitor(
 
         super.onMethodExit(opcode)
     }
+}
+
+
+class ToJsonMethodVisitor(
+    val methodVisitor: MethodVisitor,
+    access: Int,
+    name: String?,
+    descriptor: String?
+) : AdviceAdapter(Opcodes.ASM5, methodVisitor, access, name, descriptor) {
+
+    override fun onMethodEnter() {
+        super.onMethodEnter()
+
+        methodVisitor.visitFieldInsn(
+            GETSTATIC,
+            "com/example/gsonparserplugin/GsonRecorder",
+            "INSTANCE",
+            "Lcom/example/gsonparserplugin/GsonRecorder;"
+        );
+        //从局部变量1中装载引用类型值入栈
+        mv.visitVarInsn(ALOAD, 1)
+        mv.visitVarInsn(ALOAD, 2)
+        methodVisitor.visitMethodInsn(
+            INVOKEVIRTUAL,
+            "com/example/gsonparserplugin/GsonRecorder",
+            "methodEnter",
+            "(Ljava/lang/Object;Ljava/lang/Object;)V",
+            false
+        );
+    }
+
+    override fun onMethodExit(opcode: Int) {
+        super.onMethodExit(opcode)
+        methodVisitor.visitFieldInsn(
+            GETSTATIC,
+            "com/example/gsonparserplugin/GsonRecorder",
+            "INSTANCE",
+            "Lcom/example/gsonparserplugin/GsonRecorder;"
+        )
+        methodVisitor.visitLdcInsn("")
+        methodVisitor.visitMethodInsn(
+            INVOKEVIRTUAL,
+            "com/example/gsonparserplugin/GsonRecorder",
+            "methodExit",
+            "(Ljava/lang/String;)V",
+            false
+        );
+    }
+
 }
